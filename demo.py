@@ -70,12 +70,11 @@ def main(video_id):
         
 
         if os.path.isfile("youtube.xlsx"):
-            df2 = pd.read_excel("youtube.xlsx",index_col = 0)
+            df2 = pd.read_excel("youtube.xlsx")
             df= pd.concat([df2,df], axis=0)
            
-
-        df.to_excel("youtube.xlsx")
-        print(df)
+        df.to_excel("youtube.xlsx", index=False)
+        print("File Success")
 
 
 
@@ -104,5 +103,7 @@ def video_id(value):
 
 
 if __name__ == "__main__":    
-    video_id = video_id("https://www.youtube.com/watch?v=ZboVgFP3V2g")
-    main(video_id) 
+    while True:
+        url = input("url 입력 = ")
+        id = video_id(url)
+        main(id) 
