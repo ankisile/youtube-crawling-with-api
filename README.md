@@ -6,9 +6,10 @@
 2. url parsing
 3. url을 받으면 엑셀 파일에 저장
 
-\* 해야될것
+#### 6/29
 
-- api 키 정보 변경
+1. conf.py 파일 만들어서 api 키 저장
+2. pycache 설치해서 exe 파일 만들기
 
 ### 참고문서
 
@@ -17,3 +18,4 @@
 - https://developers.google.com/youtube/v3/docs/videos/list?apix_params=%7B%22part%22%3A%5B%22id%2C%20snippet%2C%20statistics%22%5D%2C%22id%22%3A%5B%226xzaH46i2eg%22%5D%7D
 - https://untitledtblog.tistory.com/169
 - https://velog.io/@ally0526/1.-Youtube-API로-댓글-가져오기
+- https://stackoverflow.com/questions/4356538/how-can-i-extract-video-id-from-youtubes-link-in-python
