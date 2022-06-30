@@ -5,6 +5,7 @@ import re
 import pandas as pd #엑셀 형태로 저장하기 위한 라이브러리
 from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
+from googleapiclient import discovery
 import json
 from urllib.parse import urlparse, parse_qs
 from pprint import pprint
@@ -21,7 +22,7 @@ def get_video(service, video_id):
         ).execute()
 
         return response['items']
-         
+        
     except HttpError as e:
         errMsg = json.loads(e.content)
         print('HTTP Error:')
@@ -30,14 +31,21 @@ def get_video(service, video_id):
 
 
 
-def main(video_id):
-    DEVELOPER_KEY = config['developer_key']
+def video2excel(video_id):
+
+    DEVELOPER_KEY = 'AIzaSyDqMOpJralVVgKQSRsnpHrl6L6v2Qatzjc'
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"
 
-    service = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-        developerKey=DEVELOPER_KEY)
+    # Path to the json file you downloaded:
+    path_json = './rest.json'
 
+    with open(path_json, encoding='UTF-8') as f:
+        yt = json.load(f)
+
+    service = discovery.build_from_document(yt, developerKey=DEVELOPER_KEY)
+
+    # service = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
 
     video = get_video(service, video_id)
 
@@ -66,9 +74,10 @@ def main(video_id):
         if os.path.isfile("youtube.xlsx"):
             df2 = pd.read_excel("youtube.xlsx")
             df= pd.concat([df2,df], axis=0)
-           
+        
         df.to_excel("youtube.xlsx", index=False)
         print("File Success")
+        return "File Success"
 
 
 
@@ -83,21 +92,25 @@ def video_id(value):
     """
     query = urlparse(value)
     if query.hostname == 'youtu.be':
+        print(query.path[1:])
         return query.path[1:]
     if query.hostname in ('www.youtube.com', 'youtube.com'):
         if query.path == '/watch':
             p = parse_qs(query.query)
+            print(p['v'][0])
             return p['v'][0]
         if query.path[:7] == '/embed/':
+            print(query.path.split('/')[2])
             return query.path.split('/')[2]
         if query.path[:3] == '/v/':
+            print( query.path.split('/')[2])
             return query.path.split('/')[2]
     # fail?
     return None
 
 
-if __name__ == "__main__":    
-    while True:
-        url = input("url 입력 = ")
-        id = video_id(url)
-        main(id) 
+# if __name__ == "__main__":    
+#     while True:
+#         url = input("url 입력 = ")
+#         id = video_id(url)
+#         video2excel(id) 

@@ -9,7 +9,8 @@
 #### 6/29
 
 1. conf.py 파일 만들어서 api 키 저장
-2. pycache 설치해서 exe 파일 만들기
+2. GUI 제작 완료
+3. pyinstaller에서 cx_Freeze로 바꿈
 
 ### 참고문서
 
@@ -19,3 +20,4 @@
 - https://untitledtblog.tistory.com/169
 - https://velog.io/@ally0526/1.-Youtube-API로-댓글-가져오기
 - https://stackoverflow.com/questions/4356538/how-can-i-extract-video-id-from-youtubes-link-in-python
+- https://stackoverflow.com/questions/61365111/youtube-data-api-build-function-doesn%c2%b4t-work
