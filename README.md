@@ -11,6 +11,10 @@
 1. conf.py 파일 만들어서 api 키 저장
 2. GUI 제작 완료
 
+#### 7/5
+
+1. 엑셀 파일에서 링크 뽑아내기 완료
+
 ### 참고문서
 
 - https://www.youtube.com/watch?v=ZboVgFP3V2g

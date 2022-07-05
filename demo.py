@@ -9,6 +9,8 @@ from googleapiclient import discovery
 import json
 from urllib.parse import urlparse, parse_qs
 from pprint import pprint
+import openpyxl as xl
+
 
 
 #service => connetion to youtube data api
@@ -30,7 +32,7 @@ def get_video(service, video_id):
 
 
 
-def video2excel(video_id):
+def video2excel(link):
 
     DEVELOPER_KEY = 'AIzaSyBswrX1sQBFfVbbpLQGAeMWuT6DwxSnQiY'
     YOUTUBE_API_SERVICE_NAME = "youtube"
@@ -46,42 +48,59 @@ def video2excel(video_id):
 
     service = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY, static_discovery=False)
 
-    video = get_video(service, video_id)
+    print("Start")
+    link_list = get_link(link) 
 
-    response = video[0]
+    # row=[]
+    # columns = ['Video Link', 'Video Title', 'Publish Date',  'Channel Name', 'Views', 'Comments','Likes','Description', 'Thumbnail' ]
+    # df = pd.DataFrame(data=row, columns=columns)    
+    
+    df = pd.DataFrame()
 
-    if response:
-        row=[]
-        columns = ['Video Link', 'Video Title', 'Publish Date',  'Channel Name', 'Views', 'Comments','Likes','Description', 'Thumbnail' ]
-        rs = response['snippet']
-        st = response['statistics']
+    for i in link_list:
+        video_id = get_video_id(i)
+        video = get_video(service, video_id)
 
-        video_url = "https://www.youtube.com/watch?v={0}".format(response['id'])
-        video_title = rs['title']
-        video_desc = rs['description']
-        thumbnail = rs['thumbnails']['standard']['url'] if 'standard' in rs['thumbnails'] else rs['thumbnails']['high']['url']
-        channel_name =rs['channelTitle']
-        publish_date = rs['publishedAt'][:-1]
-        view_count = st['viewCount']
-        comment_count = st['commentCount']
-        like_count = st['likeCount']
+        response = video[0]
 
-        row.append([video_url, video_title, publish_date, channel_name, view_count, comment_count, like_count, video_desc, thumbnail])
-        df = pd.DataFrame(data=row, columns=columns)
-        
+        if response:
+            row=[]
+            columns = ['Video Link', 'Video Title', 'Publish Date',  'Channel Name', 'Views', 'Comments','Likes','Description', 'Thumbnail' ]
+            rs = response['snippet']
+            st = response['statistics']
 
-        if os.path.isfile("youtube.xlsx"):
-            df2 = pd.read_excel("youtube.xlsx")
-            df= pd.concat([df2,df], axis=0)
-        
-        df.to_excel("youtube.xlsx", index=False)
-        print("File Success")
-        return response['id']
+            video_url = "https://www.youtube.com/watch?v={0}".format(response['id'])
+            video_title = rs['title']
+            video_desc = rs['description']
+            thumbnail = rs['thumbnails']['standard']['url'] if 'standard' in rs['thumbnails'] else rs['thumbnails']['high']['url']
+            channel_name =rs['channelTitle']
+            publish_date = rs['publishedAt'][:-1]
+            view_count = st['viewCount']
+            comment_count = st['commentCount'] 
+            try:
+                like_count = st['likeCount'] if st['likeCount'] != 0 else 0
+            except KeyError as l:
+                like_count==0
 
+            row.append([video_url, video_title, publish_date, channel_name, view_count, comment_count, like_count, video_desc, thumbnail])
+            # df =pd.DataFrame(data=row, columns=columns) 
+            video_df = pd.DataFrame(data=row, columns=columns) 
+            df = pd.concat([df, video_df], ignore_index=True)
+       
+ 
+    pprint(df)
+
+    if os.path.isfile("youtube.xlsx"):
+        df2 = pd.read_excel("youtube.xlsx")
+        df= pd.concat([df2,df], axis=0)
+    
+    df.to_excel("youtube.xlsx", index=False)
+    print("File Success")
+    return "Success"
 
 
 # https://stackoverflow.com/questions/4356538/how-can-i-extract-video-id-from-youtubes-link-in-python
-def video_id(value):
+def get_video_id(value):
     """
     Examples:
     - http://youtu.be/SA2iWivDJiE
@@ -91,25 +110,38 @@ def video_id(value):
     """
     query = urlparse(value)
     if query.hostname == 'youtu.be':
-        print(query.path[1:])
+        # print(query.path[1:])
         return query.path[1:]
     if query.hostname in ('www.youtube.com', 'youtube.com'):
         if query.path == '/watch':
             p = parse_qs(query.query)
-            print(p['v'][0])
+            # print(p['v'][0])
             return p['v'][0]
         if query.path[:7] == '/embed/':
-            print(query.path.split('/')[2])
+            # print(query.path.split('/')[2])
             return query.path.split('/')[2]
         if query.path[:3] == '/v/':
-            print( query.path.split('/')[2])
+            # print( query.path.split('/')[2])
             return query.path.split('/')[2]
     # fail?
     return None
 
+def get_link(url):
+
+    value=url.replace('"','')
+
+    read_xlsx = xl.load_workbook(value)
+    read_sheet = read_xlsx.active
+
+    name_col = read_sheet['A']
+    names = []
+    for cell in name_col:
+        names.append(cell.value)
+
+    return names
+
 
 # if __name__ == "__main__":    
-#     while True:
-#         url = input("url 입력 = ")
-#         id = video_id(url)
-#         video2excel(id) 
+#     url = input("url 입력 = ")
+#     # id = get_link(url)
+#     video2excel(url) 

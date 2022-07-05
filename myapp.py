@@ -7,7 +7,7 @@ class MyApp(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.lbl1 = QLabel('링크:', self)
+        self.lbl1 = QLabel('파일명:', self)
         self.lbl2 = QLabel('', self)
         self.le = QLineEdit(self)
         self.trans_btn = QPushButton('ADD', self)
@@ -31,8 +31,7 @@ class MyApp(QWidget):
     def translate(self):
         link = self.le.text()
         print(link)
-        id = ya.video_id(link)
-        text = ya.video2excel(id)
+        text = ya.video2excel(link)
         self.lbl2.setText(text)
 
 
