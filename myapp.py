@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import *
 import demo as ya
+from PyQt5.QtCore import QTimer
 
 class MyApp(QWidget):
 
@@ -39,3 +40,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyApp()
     sys.exit(app.exec_())
+    

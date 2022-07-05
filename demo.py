@@ -9,7 +9,6 @@ from googleapiclient import discovery
 import json
 from urllib.parse import urlparse, parse_qs
 from pprint import pprint
-from conf import config
 
 
 #service => connetion to youtube data api
@@ -33,19 +32,19 @@ def get_video(service, video_id):
 
 def video2excel(video_id):
 
-    DEVELOPER_KEY = 'AIzaSyDqMOpJralVVgKQSRsnpHrl6L6v2Qatzjc'
+    DEVELOPER_KEY = 'AIzaSyBswrX1sQBFfVbbpLQGAeMWuT6DwxSnQiY'
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"
 
     # Path to the json file you downloaded:
-    path_json = './rest.json'
+    # path_json = 'rest.json'
 
-    with open(path_json, encoding='UTF-8') as f:
-        yt = json.load(f)
+    # with open(path_json, encoding='UTF-8') as f:
+    #     yt = json.load(f)
 
-    service = discovery.build_from_document(yt, developerKey=DEVELOPER_KEY)
+    # service = discovery.build_from_document(yt, developerKey=DEVELOPER_KEY)
 
-    # service = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
+    service = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY, static_discovery=False)
 
     video = get_video(service, video_id)
 
@@ -77,7 +76,7 @@ def video2excel(video_id):
         
         df.to_excel("youtube.xlsx", index=False)
         print("File Success")
-        return "File Success"
+        return response['id']
 
 
 

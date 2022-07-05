@@ -10,7 +10,6 @@
 
 1. conf.py 파일 만들어서 api 키 저장
 2. GUI 제작 완료
-3. pyinstaller에서 cx_Freeze로 바꿈
 
 ### 참고문서
 
