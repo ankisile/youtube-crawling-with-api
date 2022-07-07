@@ -1,5 +1,7 @@
 # YOUTUBE DATA API를 이용하여 유투브 정보를 크롤링 해보자
 
+https://hse06028.tistory.com/190
+
 #### 6/28
 
 1. data api를 이용하여 유튜브 비디오 정보 크롤링
