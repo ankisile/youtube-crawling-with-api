@@ -58,42 +58,45 @@ def video2excel(link):
     df = pd.DataFrame()
 
     for i in link_list:
-        video_id = get_video_id(i)
-        video = get_video(service, video_id)
-
-        response = video[0]
-
-        if response:
-            row=[]
-            columns = ['Video Link', 'Video Title', 'Publish Date',  'Channel Name', 'Views', 'Comments','Likes','Description', 'Thumbnail' ]
-            rs = response['snippet']
-            st = response['statistics']
-
-            video_url = "https://www.youtube.com/watch?v={0}".format(response['id'])
-            video_title = rs['title']
-            video_desc = rs['description']
-            thumbnail = rs['thumbnails']['standard']['url'] if 'standard' in rs['thumbnails'] else rs['thumbnails']['high']['url']
-            channel_name =rs['channelTitle']
-            publish_date = rs['publishedAt'][:-1]
-            view_count = st['viewCount']
-            comment_count = st['commentCount'] 
-            try:
-                like_count = st['likeCount'] if st['likeCount'] != 0 else 0
-            except KeyError as l:
-                like_count==0
-
-            row.append([video_url, video_title, publish_date, channel_name, view_count, comment_count, like_count, video_desc, thumbnail])
-            # df =pd.DataFrame(data=row, columns=columns) 
+        row=[]
+        columns = ['Video Link', 'Video Title', 'Publish Date',  'Channel Name', 'Views', 'Comments','Likes','Description', 'Thumbnail' ]
+        
+        if "shorts" in i:
+            row.append([i,None,None,None,None,None,None,None,None])
             video_df = pd.DataFrame(data=row, columns=columns) 
-            df = pd.concat([df, video_df], ignore_index=True)
-       
+            
+        else:
+            video_id = get_video_id(i)
+            video = get_video(service, video_id)
+
+            response = video[0]
+
+            if response:
+                
+                rs = response['snippet']
+                st = response['statistics']
+
+                video_url = "https://www.youtube.com/watch?v={0}".format(response['id'])
+                video_title = rs['title']
+                video_desc = rs['description']
+                thumbnail = rs['thumbnails']['standard']['url'] if 'standard' in rs['thumbnails'] else rs['thumbnails']['high']['url']
+                channel_name =rs['channelTitle']
+                publish_date = rs['publishedAt'][:-1]
+                view_count = st['viewCount']
+                comment_count = st['commentCount'] 
+                try:
+                    like_count = st['likeCount'] if st['likeCount'] != 0 else 0
+                except KeyError as l:
+                    like_count==0
+
+                row.append([video_url, video_title, publish_date, channel_name, view_count, comment_count, like_count, video_desc, thumbnail])
+                # df =pd.DataFrame(data=row, columns=columns) 
+                video_df = pd.DataFrame(data=row, columns=columns) 
+        df = pd.concat([df, video_df], ignore_index=True)
+        
  
     pprint(df)
 
-    if os.path.isfile("youtube.xlsx"):
-        df2 = pd.read_excel("youtube.xlsx")
-        df= pd.concat([df2,df], axis=0)
-    
     df.to_excel("youtube.xlsx", index=False)
     print("File Success")
     return "Success"
