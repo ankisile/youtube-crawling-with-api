@@ -1,3 +1,5 @@
 *.json
 youtube.xlsx
-conf.py
+config.py
+build
+dist

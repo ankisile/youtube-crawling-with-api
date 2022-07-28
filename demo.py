@@ -10,6 +10,7 @@ import json
 from urllib.parse import urlparse, parse_qs
 from pprint import pprint
 import openpyxl as xl
+import config
 
 
 
@@ -34,7 +35,7 @@ def get_video(service, video_id):
 
 def video2excel(link):
 
-    DEVELOPER_KEY = 'AIzaSyBswrX1sQBFfVbbpLQGAeMWuT6DwxSnQiY'
+    DEVELOPER_KEY = config.key
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"
 
